@@ -6,9 +6,9 @@
 #include "pico/binary_info.h"
 #include "h595-shift-register-nn.h"
 
-#define PICO_SERIAL_PIN 0
-#define PICO_SR_CLOCK_PIN 1
-#define PICO_STR_CLOCK_PIN 2
+#define PICO_SERIAL_PIN 6
+#define PICO_SR_CLOCK_PIN 7
+#define PICO_STR_CLOCK_PIN 8
 
 /**
  * @brief Init GPIO Led Pin
@@ -52,21 +52,17 @@ int main() {
     // launch thread to control onboard led
     multicore_launch_core1(blinking);
 
-    // Init Shit Regsiter Pins
-    gpio_init(PICO_SERIAL_PIN);
-    gpio_set_dir(PICO_SERIAL_PIN, GPIO_OUT);
-    
-    gpio_init(PICO_SR_CLOCK_PIN);
-    gpio_set_dir(PICO_SR_CLOCK_PIN, GPIO_OUT);
-    
-    gpio_init(PICO_STR_CLOCK_PIN);
-    gpio_set_dir(PICO_STR_CLOCK_PIN, GPIO_OUT);
+    //  Init Shift Register
+    ShiftRegister sr = shift_register_new((PicoPinConfig){
+        .Serial = PICO_SERIAL_PIN,
+        .RegisterClock = PICO_SR_CLOCK_PIN,
+        .StorageClock = PICO_STR_CLOCK_PIN
+    });
 
-    
     while (1) {
         if (counter > 9) counter = 0;
         // counter in seven segment display
-        hc595_shift_segment(counter);
+        hc595_shift_segment(&sr, counter);
         sleep_ms(1000);
         counter++;
     }

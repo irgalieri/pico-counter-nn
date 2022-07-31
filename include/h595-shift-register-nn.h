@@ -2,17 +2,25 @@
 #include <stdlib.h>
 #include "pico/stdlib.h"
 
-#ifndef PICO_SERIAL_PIN
-#define PICO_SERIAL_PIN 0
-#endif
+typedef struct PicoPinConfig {
+    uint Serial;
+    uint RegisterClock;
+    uint StorageClock;
+} PicoPinConfig;
 
-#ifndef PICO_SR_CLOCK_PIN
-#define PICO_SR_CLOCK_PIN 1
-#endif
+typedef struct ShiftRegister {
+    uint serial;
+    uint registerClock;
+    uint StorageClock;
+} ShiftRegister;
 
-#ifndef PICO_STR_CLOCK_PIN
-#define PICO_STR_CLOCK_PIN 2
-#endif
+/**
+ * @brief Construct and init Shift Register
+ * 
+ * @param config Pico Pins Config
+ * @return ShiftRegister 
+ */
+ShiftRegister shift_register_new(PicoPinConfig config);
 
 /**
  * @brief Send One Bit to HC595
@@ -22,7 +30,7 @@
  * @return true Ok
  * @return false Fail
  */
-bool hc595_shift_bit(bool bit);
+bool hc595_shift_bit(ShiftRegister* sr, bool bit);
 
 /**
  * @brief Out register to parallel output
@@ -31,7 +39,7 @@ bool hc595_shift_bit(bool bit);
  * @return true Ok
  * @return false Fail
  */
-bool hc595_out_shift_register(void);
+bool hc595_out_shift_register(ShiftRegister* sr);
 
 /**
  * @brief Send Number to HC595
@@ -41,7 +49,7 @@ bool hc595_out_shift_register(void);
  * @return true Ok
  * @return false Fail
  */
-bool hc595_shift(uint data);
+bool hc595_shift(ShiftRegister* sr, uint data);
 
 /**
  * @brief Send Segment Number to HC595
@@ -51,4 +59,4 @@ bool hc595_shift(uint data);
  * @return true Ok
  * @return false Fail
  */
-bool hc595_shift_segment(uint segment);
+bool hc595_shift_segment(ShiftRegister* sr, uint segment);
