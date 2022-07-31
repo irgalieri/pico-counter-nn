@@ -11,6 +11,7 @@ set(PICO_SDK_PATH "/home/pi/working-copy/pico/pico-sdk")
 
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/src/CMakeLists.txt)
 
 project(pico-counter-nn C CXX ASM)
 
@@ -33,7 +34,11 @@ pico_enable_stdio_usb(pico-counter-nn 0)
 target_link_libraries(pico-counter-nn pico_stdlib)
 
 # Add any user requested libraries
-target_link_libraries(pico-counter-nn pico_multicore pico_binary_info)
+target_link_libraries(pico-counter-nn
+    pico_multicore
+    pico_binary_info
+    h595-shift-register-nn
+)
 
 pico_add_extra_outputs(pico-counter-nn)
 
